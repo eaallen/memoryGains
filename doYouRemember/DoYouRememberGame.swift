@@ -16,8 +16,8 @@ struct DoYouRememberGame<CardContent>{
         
         for i in 0 ..< numberOfPairsOfCards{
             let cardContent = cardContentFactory(i)
-            cards.append(Card(content: cardContent))
-            cards.append(Card(content: cardContent))
+            cards.append(Card(content: cardContent, id: "\(i)_part_a"))
+            cards.append(Card(content: cardContent, id: "\(i)_part_b"))
         }
     }
     
@@ -25,9 +25,10 @@ struct DoYouRememberGame<CardContent>{
         print("you chose \(card)")
     }
     
-    struct Card{
+    struct Card: Identifiable{
         var isFaceUp = true
         var isMathced = true
         var content: CardContent
+        var id: String
     }
 }

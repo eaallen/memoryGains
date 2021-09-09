@@ -12,8 +12,10 @@ struct ContentView: View {
     var viewModel = EmojiViewModel()
     var body: some View {
         HStack {
-            ForEach(0 ..< 4){index in
-                CardView(card: self.viewModel.cards[index])
+            ForEach(viewModel.cards.shuffled()){card in
+                CardView(card: card).onTapGesture(perform: {
+                    self.viewModel.choose(card: card)
+                }).aspectRatio(2/3, contentMode: .fit).font(self.viewModel.cards.count > 4 ? .title : .largeTitle)
             }
         }
     }
@@ -23,11 +25,10 @@ struct CardView : View{
     var card: DoYouRememberGame<String>.Card
     var body: some View{
         ZStack{
-            if card.isFaceUp{
+            if card.isFaceUp {
                 RoundedRectangle(cornerRadius: 10).stroke()
                 RoundedRectangle(cornerRadius: 10).fill(Color.white)
                 Text(card.content)
-                    .font(.largeTitle)
             } else {
                 RoundedRectangle(cornerRadius: 10)
             }

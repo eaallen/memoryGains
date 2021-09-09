@@ -11,9 +11,11 @@ import SwiftUI
 
 class EmojiViewModel{
     var game = createGame()
-        
+    
+    static let emojis = ["🍏","🍓","🥝","🫑","🥐"].shuffled().prefix(Int.random(in: 2...5))
+    
     static func createGame () -> DoYouRememberGame<String>{
-        DoYouRememberGame<String>(numberOfPairsOfCards: 2){$0 > 0 ? "🥥":"🍍"}
+        DoYouRememberGame<String>(numberOfPairsOfCards: emojis.count){emojis[$0]}
     }
     // MARK: - Access to model
     var cards: Array<DoYouRememberGame<String>.Card>{
