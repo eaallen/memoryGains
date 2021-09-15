@@ -8,40 +8,38 @@
 
 import SwiftUI
 
+//@available(iOS 14.0, *)
+@available(iOS 14.0, *)
 struct ContentView: View {
-    var viewModel = EmojiViewModel()
+    @ObservedObject var viewModel = EmojiViewModel()
+    
+    
+    private func columns(size: CGSize) -> [GridItem]{
+        Array(repeating: GridItem(.flexible()), count: Int(size.width / 125 ))
+    }
     var body: some View {
-        HStack {
-            ForEach(viewModel.cards.shuffled()){card in
-                CardView(card: card).onTapGesture(perform: {
-                    self.viewModel.choose(card: card)
-                }).aspectRatio(2/3, contentMode: .fit).font(self.viewModel.cards.count > 4 ? .title : .largeTitle)
+        GeometryReader{ geometry in
+            LazyVGrid(columns: columns(size: geometry.size)) {
+                ForEach(viewModel.cards){card in
+                    CardView(card: card).onTapGesture(perform: {
+                        self.viewModel.choose(card: card)
+                    })
+                        .aspectRatio(2/3, contentMode: .fit)
+                        .font(self.viewModel.cards.count > 4 ? .title : .largeTitle)
+                }
             }
         }
     }
 }
 
-struct CardView : View{
-    var card: DoYouRememberGame<String>.Card
-    var body: some View{
-        ZStack{
-            if card.isFaceUp {
-                RoundedRectangle(cornerRadius: 10).stroke()
-                RoundedRectangle(cornerRadius: 10).fill(Color.white)
-                Text(card.content)
-            } else {
-                RoundedRectangle(cornerRadius: 10)
-            }
-        }.foregroundColor(.blue)
-        
-        
-    }
-    
-    
-}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(viewModel: EmojiViewModel())
+        if #available(iOS 14.0, *) {
+            ContentView(viewModel: EmojiViewModel())
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }

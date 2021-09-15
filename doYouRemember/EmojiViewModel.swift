@@ -9,8 +9,8 @@
 import SwiftUI
 
 
-class EmojiViewModel{
-    var game = createGame()
+class EmojiViewModel: ObservableObject{
+    @Published var game = createGame()
     
     static let emojis = ["🍏","🍓","🥝","🫑","🥐"].shuffled().prefix(Int.random(in: 2...5))
     
@@ -22,7 +22,7 @@ class EmojiViewModel{
         game.cards
     }
     
-    // MARK - Intents
+    // MARK: - Intents
     func choose(card: DoYouRememberGame<String>.Card){
         game.choose(card: card)
     }
