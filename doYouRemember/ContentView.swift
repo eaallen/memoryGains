@@ -13,22 +13,37 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var viewModel = EmojiViewModel()
     
-    
     private func columns(size: CGSize) -> [GridItem]{
-        Array(repeating: GridItem(.flexible()), count: Int(size.width / 125 ))
+        Array(repeating: GridItem(.flexible()), count: Int(size.width / Constants.columnWidth ))
     }
+    
     var body: some View {
-        GeometryReader{ geometry in
-            LazyVGrid(columns: columns(size: geometry.size)) {
-                ForEach(viewModel.cards){card in
-                    CardView(card: card).onTapGesture(perform: {
-                        self.viewModel.choose(card: card)
-                    })
-                        .aspectRatio(2/3, contentMode: .fit)
-                        .font(self.viewModel.cards.count > 4 ? .title : .largeTitle)
+        VStack{
+            GeometryReader{ geometry in		
+                LazyVGrid(columns: columns(size: geometry.size)) {
+                    ForEach(viewModel.cards){card in
+                        CardView(card: card).onTapGesture(perform: {
+                            self.viewModel.choose(card: card)
+                        })
+                            .aspectRatio(2/3, contentMode: .fit)
+                            .font(self.viewModel.cards.count > 4 ? .title : .largeTitle)
+                    }
                 }
             }
-        }
+            
+            HStack {
+                Button(action: viewModel.createNewGame){
+                    Text("new game")
+                }
+                Text("Score: \(viewModel.score)")
+            }
+        }.padding()
+    }
+    
+    
+    // MARK: - Constants
+    private struct Constants {
+        static let columnWidth: CGFloat = 125
     }
 }
 

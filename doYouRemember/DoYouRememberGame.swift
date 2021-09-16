@@ -8,8 +8,12 @@
 
 import Foundation
 
-struct DoYouRememberGame<CardContent>{
+
+struct DoYouRememberGame<CardContent> where CardContent: Equatable {
     var cards: Array<Card>
+    
+    var indexOfTheOneAndOnlyFaceUpCard: Int?
+    var score = 0
     
     init(numberOfPairsOfCards: Int, cardContentFactory: (Int)->CardContent){
         cards = Array<Card>()
@@ -21,10 +25,36 @@ struct DoYouRememberGame<CardContent>{
         cards = cards.shuffled()
     }
     
-    mutating func choose(card: Card){
-        if let i = index(of: card){
-            cards[i].flip()
-            print("you chose \(cards[i])")
+    mutating func choose(card: Card, reportOutcomeScore: (Int) -> Void){
+        if let choosenIndex = cards.firstIndex(of: card), !cards[choosenIndex].isMathced, !cards[choosenIndex].isFaceUp {
+            
+            if let potentialMatchIndex = indexOfTheOneAndOnlyFaceUpCard {
+                // print(cards[potentialMatchIndex].content , cards[choosenIndex].content)
+                if cards[potentialMatchIndex].content == cards[choosenIndex].content {
+                    // we found a match!
+                    cards[choosenIndex].isFaceUp = true
+                    cards[potentialMatchIndex].isFaceUp = true
+                    cards[choosenIndex].isMathced = true
+                    cards[potentialMatchIndex].isMathced = true
+                    reportOutcomeScore(2)
+                }else{
+                    // did not find a match
+                    reportOutcomeScore(-1)
+                }
+                indexOfTheOneAndOnlyFaceUpCard = nil
+            }else{
+                // we did not
+                // there has got to be a better way to do this... refactor
+                for index in cards.indices{
+                    if !cards[index].isMathced {
+                        cards[index].isFaceUp = false
+                    }
+                }
+                
+                indexOfTheOneAndOnlyFaceUpCard = choosenIndex
+                
+            }
+            cards[choosenIndex].isFaceUp = true
         }
     }
     
@@ -40,8 +70,8 @@ struct DoYouRememberGame<CardContent>{
     
     
     struct Card: Identifiable{
-        var isFaceUp = true
-        var isMathced = true
+        var isFaceUp = false
+        var isMathced = false
         var content: CardContent	
         var id: String
         

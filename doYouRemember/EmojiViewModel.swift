@@ -11,12 +11,21 @@ import SwiftUI
 
 class EmojiViewModel: ObservableObject{
     @Published var game = createGame()
+    @Published var score = 0
     
-    static let emojis = ["🍏","🍓","🥝","🫑","🥐"].shuffled().prefix(Int.random(in: 2...5))
+    
+    static let emojis = ["🍏","🍓","🥝","🫑","🥐"]
     
     static func createGame () -> DoYouRememberGame<String>{
-        DoYouRememberGame<String>(numberOfPairsOfCards: emojis.count){emojis[$0]}
+        let emojiList = emojis.shuffled().prefix(Int.random(in: 2...emojis.count))
+        return DoYouRememberGame<String>(numberOfPairsOfCards: emojiList.count){emojiList[$0]}
     }
+    
+    // MARK: - Game Control
+    func createNewGame(){
+        game = EmojiViewModel.createGame()
+    }
+    
     // MARK: - Access to model
     var cards: Array<DoYouRememberGame<String>.Card>{
         game.cards
@@ -24,6 +33,10 @@ class EmojiViewModel: ObservableObject{
     
     // MARK: - Intents
     func choose(card: DoYouRememberGame<String>.Card){
-        game.choose(card: card)
+        game.choose(card: card, reportOutcomeScore: addScore)
+    }
+    
+    func addScore(_ score: Int){
+        self.score = self.score + score
     }
 }

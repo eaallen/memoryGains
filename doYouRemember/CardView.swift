@@ -12,15 +12,17 @@ struct CardView : View{
     var card: DoYouRememberGame<String>.Card
     var body: some View{
         GeometryReader{ geometry in
-            ZStack{
-                if card.isFaceUp {
-                    RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke()
-                    RoundedRectangle(cornerRadius: Constants.cornerRadius).fill(Color.white)
-                    Text(card.content).font(self.systemFont(for: geometry.size))
-                } else {
-                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
-                }
-            }.foregroundColor(.blue)
+            if !card.isMathced {
+                ZStack{
+                    if card.isFaceUp {
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke()
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius).fill(Color.white)
+                        Text(card.content).font(self.systemFont(for: geometry.size))
+                    } else {
+                        RoundedRectangle(cornerRadius: Constants.cornerRadius)
+                    }
+                }.foregroundColor(.blue)
+            }
             
         }.aspectRatio(2/3, contentMode: .fit)
         
