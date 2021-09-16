@@ -23,6 +23,7 @@ class EmojiViewModel: ObservableObject{
     
     // MARK: - Game Control
     func createNewGame(){
+        score = 0
         game = EmojiViewModel.createGame()
     }
     
